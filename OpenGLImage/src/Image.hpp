@@ -7,6 +7,14 @@
 
 #include "ImageLoader.hpp"
 
+enum Colors
+{
+	RED = 0,
+	GREEN = 1,
+	BLUE = 2
+};
+
+
 class Image
 {
 public:
@@ -31,7 +39,7 @@ public:
 	void set_channels(int channels);
 	std::string get_save_path() const;
 	void set_save_path(const std::string& save_path);
-	std::shared_ptr<std::vector<float>> getReds(std::shared_ptr<std::vector<float>> reds);
+	std::vector<float> getReds(Colors Red);
 
 private:
 	int height_{};

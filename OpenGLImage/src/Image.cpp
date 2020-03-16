@@ -1,6 +1,7 @@
 #include "Image.hpp"
 
 #include <filesystem>
+#include <map>
 
 Image::Image()
 = default;
@@ -117,11 +118,25 @@ void Image::set_save_path(const std::string& save_path)
 	save_path_ = save_path;
 }
 
-std::shared_ptr<std::vector<float>> Image::getReds(std::shared_ptr<std::vector<float>> reds)
+std::vector<float> Image::getReds(Colors color)
 {
-	for(int i = 0; i < width_ * height_* 4; i+=4)
+	std::vector<float> reds;
+	std::map<int, int> value_map;
+
+	for (auto i = 0; i < 256; i++)
 	{
-		reds->push_back(static_cast<float>(main_data_[i]));
+		value_map.insert(std::pair<int, int>(i, 0));
+	}
+	
+	for (auto i = static_cast<int>(color); i < width_ * height_ * 4; i += 4)
+	{
+		value_map[main_data_[i]]++;
+	}
+
+	reds.reserve(value_map.size());
+	for (auto& it : value_map)
+	{
+		reds.push_back(it.second);
 	}
 	return reds;
 }

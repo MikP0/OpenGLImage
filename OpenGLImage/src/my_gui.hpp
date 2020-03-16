@@ -85,6 +85,7 @@ namespace my_gui
         for (auto my_image : image_vector) {
             static float size = 1;
             ImGui::Begin(my_image->get_filename().c_str(), &p_open);
+            ImGui::Columns(2);
             ImGui::Text("size = %d x %d", my_image->get_width(), my_image->get_height());
             if (ImGui::SliderFloat("Size", &size, 0.1, 1.5))
                 my_image->set_size(size);
@@ -101,8 +102,14 @@ namespace my_gui
         static int brightness = 0;
         static float contrast = 1;
         static bool negative = false;
+        static bool show_histogram = false;
     
-
+        ImGui::NextColumn();
+        if (show_histogram) {
+            if (ImGui::CollapsingHeader("Histograms")) {
+                draw_histogram(my_image);
+            }
+        }
         ImGui::SliderInt("Brightness", &brightness, -255, 255);
         ImGui::SliderFloat("Contrast", &contrast, 0.1f, 8.0f);
         ImGui::Checkbox("Negative", &negative);
@@ -115,16 +122,22 @@ namespace my_gui
             if (negative)
                 ImageEditor::change_negative(my_image);
 
-            //Histogram
-            
-    	}
-        draw_histogram(my_image);
+            show_histogram = true;
+    	}	
     }
 	
     void draw_histogram(const std::shared_ptr<Image>& image)
     {
-        std::shared_ptr<std::vector<float>> reds = std::make_shared<std::vector<float>>() ;
-        image->getReds(reds);
-		ImGui::PlotHistogram("Red Histogram", reds->data(),image->get_width() * image->get_height());
+        auto re = std::make_shared<std::vector<float>>(image->getReds(Colors::RED));
+    	auto gr = std::make_shared<std::vector<float>>(image->getReds(Colors::GREEN));
+        auto bl = std::make_shared<std::vector<float>>(image->getReds(Colors::BLUE));
+
+    	auto max_red = std::max_element(std::begin(*re), std::end(*re)); //MP: We'll leave it here for now
+        auto max_green = std::max_element(std::begin(*gr), std::end(*gr));
+    	auto max_blue = std::max_element(std::begin(*bl), std::end(*bl));
+    	
+		ImGui::PlotHistogram("", re->data(),re->size(), 0, "RED HISTOGRAM", 0.0f, 4500, ImVec2(400, 100));
+        ImGui::PlotHistogram("", gr->data(), gr->size(), 0, "GREEN HISTOGRAM", 0.0f, 4500, ImVec2(400, 100));
+        ImGui::PlotHistogram("", bl->data(), bl->size(), 0, "BLUE HISTOGRAM", 0.0f, 4500, ImVec2(400, 100));
     }
 }
