@@ -136,8 +136,12 @@ namespace my_gui
         auto max_green = std::max_element(std::begin(*gr), std::end(*gr));
     	auto max_blue = std::max_element(std::begin(*bl), std::end(*bl));
     	
-		ImGui::PlotHistogram("", re->data(),re->size(), 0, "RED HISTOGRAM", 0.0f, 4500, ImVec2(400, 100));
-        ImGui::PlotHistogram("", gr->data(), gr->size(), 0, "GREEN HISTOGRAM", 0.0f, 4500, ImVec2(400, 100));
-        ImGui::PlotHistogram("", bl->data(), bl->size(), 0, "BLUE HISTOGRAM", 0.0f, 4500, ImVec2(400, 100));
+        ImGui::PushStyleColor(ImGuiCol_PlotHistogram, (ImVec4)ImColor(255, 0, 0));
+		ImGui::PlotHistogram("", re->data(),re->size(), 0, "RED HISTOGRAM", 0.0f, 4500, ImVec2(500, 100));
+        ImGui::PushStyleColor(ImGuiCol_PlotHistogram, (ImVec4)ImColor(0, 255, 0));
+        ImGui::PlotHistogram("", gr->data(), gr->size(), 0, "GREEN HISTOGRAM", 0.0f, 4500, ImVec2(500, 100));
+        ImGui::PushStyleColor(ImGuiCol_PlotHistogram, (ImVec4)ImColor(0, 0, 255));
+        ImGui::PlotHistogram("", bl->data(), bl->size(), 0, "BLUE HISTOGRAM", 0.0f, 4500, ImVec2(500, 100));
+        ImGui::PopStyleColor(3);
     }
 }
