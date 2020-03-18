@@ -40,22 +40,26 @@ public:
 	std::string get_save_path() const;
 	void set_save_path(const std::string& save_path);
 	std::vector<float> getReds(Colors Red);
+	std::vector<float> get_red_histogram() const;
+	void set_red_histogram(const std::vector<float>& red_histogram);
+	std::vector<float> get_green_histogram() const;
+	void set_green_histogram(const std::vector<float>& green_histogram);
+	std::vector<float> get_blue_histogram() const;
+	void set_blue_histogram(const std::vector<float>& blue_histogram);
+	float sum_histogram_elements(Colors color, int n) const;
 
 private:
 	int height_{};
 	int width_{};
 	int channels_{};
-public:
-
-
-private:
 	GLuint texture_{};
 	std::string filename_{};
 	unsigned char* data_{};
 	std::vector<unsigned char> main_data_{};
 	float size_{};
 	std::string save_path_{};
-public:
-
+	std::vector<float> red_histogram_;
+	std::vector<float> green_histogram_;
+	std::vector<float> blue_histogram_;
 };
 

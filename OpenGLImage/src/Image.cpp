@@ -140,3 +140,57 @@ std::vector<float> Image::getReds(Colors color)
 	}
 	return reds;
 }
+	std::vector<float> Image::get_red_histogram() const
+	{
+		return red_histogram_;
+	}
+
+	void Image::set_red_histogram(const std::vector<float>& red_histogram)
+	{
+		red_histogram_ = red_histogram;
+	}
+
+	std::vector<float> Image::get_green_histogram() const
+	{
+		return green_histogram_;
+	}
+
+	void Image::set_green_histogram(const std::vector<float>& green_histogram)
+	{
+		green_histogram_ = green_histogram;
+	}
+
+	std::vector<float> Image::get_blue_histogram() const
+	{
+		return blue_histogram_;
+	}
+
+	void Image::set_blue_histogram(const std::vector<float>& blue_histogram)
+	{
+		blue_histogram_ = blue_histogram;
+	}
+
+	float Image::sum_histogram_elements(Colors color, int n) const
+	{
+		std::vector<float> histogram;
+		float sum = 0;
+	
+		if(color == Colors::RED)
+		{
+			histogram = get_red_histogram();
+		}
+		else if(color == Colors::GREEN)
+		{
+			histogram = get_green_histogram();
+		}
+		else if(color == Colors::BLUE)
+		{
+			histogram = get_blue_histogram();
+		}
+		
+		for(auto i = 0; i <= n; i++)
+		{
+			sum += histogram[i];
+		}
+		return sum;
+	}
