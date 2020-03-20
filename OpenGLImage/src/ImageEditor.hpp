@@ -11,5 +11,6 @@ public:
 	static void change_negative(const std::shared_ptr<Image>& my_image);
 	static void change_contrast(const std::shared_ptr<Image>& my_image, float contrast);
 	static void density_function(const std::shared_ptr<Image>& my_image, float g_min, float g_max);
+	static void filter_convolution(const std::shared_ptr < Image>& my_image, int matrix_size, int* num);
 };
 

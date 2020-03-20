@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+
 // Simple helper function to load an image into a OpenGL texture with common settings
     bool ImageMisc::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
     {
@@ -75,6 +76,92 @@
         *b = pixelOffset[2];
         *a = pixelOffset[3]; //8 >= 4 ? pixelOffset[3] : 0xff;
     }
+
+	void ImageMisc::GetPixelNeighbourhood(stbi_uc* image, size_t imageWidth, int poi, int matrix_size, std::shared_ptr<std::vector<Pixel>> pixel_neighbourhood, int &centre_point)
+	{
+		unsigned bytePerPixel = 4;
+		unsigned char* pixelOffset = 0;
+
+		size_t x;
+		size_t y;
+
+		int temp_poi;
+
+		centre_point = matrix_size * matrix_size / 2;
+
+		if (matrix_size == 3)
+		{
+			for (auto i = 0; i < matrix_size * matrix_size; i++)
+			{
+				if (i < matrix_size)
+				{
+					temp_poi = poi - imageWidth - matrix_size / 2 + i;
+					x = temp_poi % imageWidth;
+					y = temp_poi / imageWidth;
+					pixelOffset = image + (x + imageWidth * y) * bytePerPixel;
+				}
+				else if (i < matrix_size * 2)
+				{
+					temp_poi = poi - matrix_size / 2 + i - matrix_size;
+					x = temp_poi % imageWidth;
+					y = temp_poi / imageWidth;
+					pixelOffset = image + (x + imageWidth * y) * bytePerPixel;
+				}
+				else if (i < matrix_size * matrix_size)
+				{
+					temp_poi = poi + imageWidth - matrix_size / 2 + i - matrix_size * 2;
+					x = temp_poi % imageWidth;
+					y = temp_poi / imageWidth;
+					pixelOffset = image + (x + imageWidth * y) * bytePerPixel;
+				}
+
+				pixel_neighbourhood->push_back(Pixel(((float)pixelOffset[0] / 255.0f), ((float)pixelOffset[1] / 255.0f), ((float)pixelOffset[2] / 255.0f), ((float)pixelOffset[3] / 255.0f)));
+			}
+		}
+		else if (matrix_size == 5)
+		{
+			for (auto i = 0; i < matrix_size * matrix_size; i++)
+			{
+				if (i < matrix_size)
+				{
+					temp_poi = poi - imageWidth - imageWidth - matrix_size / 2 + i;
+					x = temp_poi % imageWidth;
+					y = temp_poi / imageWidth;
+					pixelOffset = image + (x + imageWidth * y) * bytePerPixel;
+				}
+				else if (i < matrix_size * 2)
+				{
+					temp_poi = poi - imageWidth - matrix_size / 2 + i - matrix_size;
+					x = temp_poi % imageWidth;
+					y = temp_poi / imageWidth;
+					pixelOffset = image + (x + imageWidth * y) * bytePerPixel;
+				}
+				else if (i < matrix_size * 3)
+				{
+					temp_poi = poi - matrix_size / 2 + i - matrix_size * 2;
+					x = temp_poi % imageWidth;
+					y = temp_poi / imageWidth;
+					pixelOffset = image + (x + imageWidth * y) * bytePerPixel;
+				}
+				else if (i < matrix_size * 4)
+				{
+					temp_poi = poi + imageWidth - matrix_size / 2 + i - matrix_size * 3;
+					x = temp_poi % imageWidth;
+					y = temp_poi / imageWidth;
+					pixelOffset = image + (x + imageWidth * y) * bytePerPixel;
+				}
+				else if (i < matrix_size * matrix_size)
+				{
+					temp_poi = poi + imageWidth + imageWidth - matrix_size / 2 + i - matrix_size * 4;
+					x = temp_poi % imageWidth;
+					y = temp_poi / imageWidth;
+					pixelOffset = image + (x + imageWidth * y) * bytePerPixel;
+				}
+
+				pixel_neighbourhood->push_back(Pixel(((float)pixelOffset[0] / 255.0f), ((float)pixelOffset[1] / 255.0f), ((float)pixelOffset[2] / 255.0f), ((float)pixelOffset[3] / 255.0f)));
+			}
+		}
+	}
 
 	void ImageMisc::SavePixel(stbi_uc* data, size_t imageWidth, size_t x, size_t y, unsigned char* r = NULL, unsigned char* g = NULL, unsigned char* b = NULL, unsigned char* a = NULL)
     {
