@@ -113,6 +113,13 @@ namespace my_gui
 		static bool filt_5x5 = false;
 		static int filt_matrix5x5[25] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
+		static bool filt_med_3x3 = false;
+		static bool filt_med_5x5 = false;
+
+		static bool filt_mean_3x3 = false;
+		static bool filt_mean_5x5 = false;
+
+
 		ImGui::NextColumn();
 		if (show_histogram) {
 			if (ImGui::CollapsingHeader("Histograms")) {
@@ -133,11 +140,15 @@ namespace my_gui
 			ImGui::SliderInt("Brightness", &brightness, -255, 255);
 			ImGui::SliderFloat("Contrast", &contrast, 0.1f, 8.0f);
 			ImGui::Checkbox("Negative", &negative);
+			ImGui::Checkbox("FilterMedian3x3", &filt_med_3x3);
+			ImGui::Checkbox("FilterMedian5x5", &filt_med_5x5);
+			ImGui::Checkbox("FilterMean3x3", &filt_mean_3x3);
+			ImGui::Checkbox("FilterMean5x5", &filt_mean_5x5);
+
 			ImGui::Checkbox("Filter3x3", &filt_3x3);
 	 
 			if (filt_3x3)
 			{
-				filt_5x5 = false;
 				ImGui::InputScalarN(" ", ImGuiDataType_S32, filt_matrix3x3, 3);
 				ImGui::InputScalarN("  ", ImGuiDataType_S32, filt_matrix3x3 + 3, 3);
 				ImGui::InputScalarN("   ", ImGuiDataType_S32, filt_matrix3x3 + 6, 3);
@@ -147,13 +158,12 @@ namespace my_gui
 
 			if (filt_5x5)
 			{
-				filt_3x3 = false;
 				ImGui::InputScalarN(" ", ImGuiDataType_S32, filt_matrix5x5, 5);
 				ImGui::InputScalarN("  ", ImGuiDataType_S32, filt_matrix5x5 + 5, 5);
 				ImGui::InputScalarN("   ", ImGuiDataType_S32, filt_matrix5x5 + 10, 5);
 				ImGui::InputScalarN("    ", ImGuiDataType_S32, filt_matrix5x5 + 15, 5);
 				ImGui::InputScalarN("     ", ImGuiDataType_S32, filt_matrix5x5 + 20, 5);
-			}
+			}		
 		}
 
 
@@ -167,6 +177,18 @@ namespace my_gui
 
 			if (show_density)
 				ImageEditor::density_function(my_image, g_min, g_max);
+
+			if (filt_med_3x3)
+				ImageEditor::filter_median(my_image, 3);
+
+			if (filt_med_5x5)
+				ImageEditor::filter_median(my_image, 5);
+
+			if (filt_mean_3x3)
+				ImageEditor::filter_mean(my_image, 3);
+
+			if (filt_mean_5x5)
+				ImageEditor::filter_mean(my_image, 5);
 
 			if (filt_3x3)
 				ImageEditor::filter_convolution(my_image, 3, filt_matrix3x3);
