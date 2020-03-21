@@ -119,6 +119,7 @@ namespace my_gui
 		static bool filt_mean_3x3 = false;
 		static bool filt_mean_5x5 = false;
 
+		static bool filt_roberts = false;
 
 		ImGui::NextColumn();
 		if (show_histogram) {
@@ -164,6 +165,8 @@ namespace my_gui
 				ImGui::InputScalarN("    ", ImGuiDataType_S32, filt_matrix5x5 + 15, 5);
 				ImGui::InputScalarN("     ", ImGuiDataType_S32, filt_matrix5x5 + 20, 5);
 			}		
+
+			ImGui::Checkbox("FilterRoberts", &filt_roberts);		
 		}
 
 
@@ -195,6 +198,9 @@ namespace my_gui
 
 			if (filt_5x5)
 				ImageEditor::filter_convolution(my_image, 5, filt_matrix5x5);
+
+			if (filt_roberts)
+				ImageEditor::filter_roberts(my_image, 3);
 
 			show_histogram = true;
 		}

@@ -472,6 +472,98 @@ void ImageEditor::filter_mean(const std::shared_ptr<Image>& my_image, int matrix
 	my_image->set_main_data(output_image_data);
 }
 
+void ImageEditor::filter_roberts(const std::shared_ptr<Image>& my_image, int matrix_size)
+{
+	std::shared_ptr<Image> temp_image = std::make_shared<Image>(my_image->get_save_path().c_str());
+
+	std::vector<unsigned char> output_image_data;
+
+	unsigned char r = 0;
+	unsigned char g = 0;
+	unsigned char b = 0;
+	unsigned char a = 0;
+
+	int r_val = 0;
+	int g_val = 0;
+	int b_val = 0;
+	int a_val = 0;
+
+	float r_temp = 0;
+	float g_temp = 0;
+	float b_temp = 0;
+	float a_temp = 0;
+
+	std::shared_ptr<std::vector<ImageMisc::Pixel>> pixel_vector = std::make_shared<std::vector<ImageMisc::Pixel>>();
+	ImageMisc::Pixel temp_pixel;
+
+	for (auto i = 0; i < temp_image->get_width() * temp_image->get_height(); i++)
+	{
+		if (check_border_for_filter(i, matrix_size, temp_image))
+		{
+			int center = 0;
+
+			ImageMisc::GetPixelNeighbourhood(temp_image->get_data(), my_image->get_width(), i, matrix_size, pixel_vector, center);
+
+			temp_pixel = pixel_vector->at(center);
+
+			r_temp = powf(powf((temp_pixel.r - pixel_vector->at(pixel_vector->size() - 1).r), 2.0f) + powf(pixel_vector->at(center + matrix_size).r - pixel_vector->at(center + 1).r,2.0f), 1.0f/2.0f);
+			g_temp = powf(powf((temp_pixel.g - pixel_vector->at(pixel_vector->size() - 1).g), 2.0f) + powf(pixel_vector->at(center + matrix_size).g - pixel_vector->at(center + 1).g,2.0f), 1.0f/2.0f);
+			b_temp = powf(powf((temp_pixel.b - pixel_vector->at(pixel_vector->size() - 1).b), 2.0f) + powf(pixel_vector->at(center + matrix_size).b - pixel_vector->at(center + 1).b,2.0f), 1.0f/2.0f);
+		
+
+			ImageMisc::GetPixel(temp_image->get_data(), my_image->get_width(), i % my_image->get_width(), i / my_image->get_width(), &r, &g, &b, &a);
+			a_val = a;
+
+			r_val = r_temp * 255;
+			g_val = g_temp * 255;
+			b_val = b_temp * 255;
+
+
+			if (r_val < 0)
+				output_image_data.push_back(0);
+			else if (r_val > 255)
+				output_image_data.push_back(255);
+			else
+				output_image_data.push_back(r_val);
+
+			if (g_val < 0)
+				output_image_data.push_back(0);
+			else if (g_val > 255)
+				output_image_data.push_back(255);
+			else
+				output_image_data.push_back(g_val);
+
+			if (b_val < 0)
+				output_image_data.push_back(0);
+			else if (b_val > 255)
+				output_image_data.push_back(255);
+			else
+				output_image_data.push_back(b_val);
+
+			output_image_data.push_back(a_val);
+		}
+		else
+		{
+			ImageMisc::GetPixel(temp_image->get_data(), my_image->get_width(), i % my_image->get_width(), i / my_image->get_width(), &r, &g, &b, &a);
+			r_val = r;
+			g_val = g;
+			b_val = b;
+			a_val = 0;
+
+			output_image_data.push_back(r_val);
+			output_image_data.push_back(g_val);
+			output_image_data.push_back(b_val);
+			output_image_data.push_back(a_val);
+		}
+
+		pixel_vector->clear();
+	}
+
+	ImageMisc::LoadTextureFromData(output_image_data.data(), &my_image->get_texture(), my_image->get_width(), my_image->get_height());
+	ImageMisc::WriteImage(my_image->get_save_path().c_str(), 512, 512, 4, output_image_data.data());
+	my_image->set_main_data(output_image_data);
+}
+
 unsigned char count_density(int sum, float g_min, float g_max, int size)
 {
 	return powf(powf(g_min, 0.33f) + ((powf(g_max, 0.33f) - powf(g_min, 0.33f)) * 1 / size * sum), 3);

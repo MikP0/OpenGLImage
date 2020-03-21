@@ -14,5 +14,6 @@ public:
 	static void filter_convolution(const std::shared_ptr < Image>& my_image, int matrix_size, int* num);
 	static void filter_median(const std::shared_ptr < Image>& my_image, int matrix_size);
 	static void filter_mean(const std::shared_ptr < Image>& my_image, int matrix_size);
+	static void filter_roberts(const std::shared_ptr < Image>& my_image, int matrix_size);
 };
 
