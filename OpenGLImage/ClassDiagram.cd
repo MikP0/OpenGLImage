@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access" MembersFormat="FullSignature">
+  <Class Name="ImageEditor">
+    <Position X="31.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgYAAACAAAAAAgCAAAAAAAAAAAAAIAgAAAAQAAAA=</HashCode>
+      <FileName>src\ImageEditor.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Image">
+    <Position X="24.5" Y="3.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AEAlFNLFQFgEAABgQgAABABQAAAQBBAEAEAQAAABIQA=</HashCode>
+      <FileName>src\Image.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="ImageMisc::Pixel">
+    <Position X="28.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAABAAAAAAAAAAAoAQABAAAAAAA=</HashCode>
+      <FileName>src\ImageLoader.hpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

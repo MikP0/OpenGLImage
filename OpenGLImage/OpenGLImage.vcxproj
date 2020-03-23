@@ -187,6 +187,10 @@
   <ItemGroup>
     <Image Include="src\images\mandrilc.bmp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="Zadanie_1__Kacprowicz_Popieluch.pdf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

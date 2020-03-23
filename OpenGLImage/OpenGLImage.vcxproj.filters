@@ -101,4 +101,8 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="Zadanie_1__Kacprowicz_Popieluch.pdf" />
+  </ItemGroup>
 </Project>
