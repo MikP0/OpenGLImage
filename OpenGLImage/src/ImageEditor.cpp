@@ -11,31 +11,28 @@ void ImageEditor::change_brightness(std::shared_ptr<Image> my_image, int brightn
 	unsigned char a = 0;
 
 	std::vector<unsigned char> output_image_data;
+	unsigned char LUT[256];
+
+	for (int i = 0; i < 256; i++) {
+		if ((brightness + i) > 255)
+		{
+			LUT[i] = 255;
+		}
+		else if ((brightness + i) < 0)
+		{
+			LUT[i] = 0;
+		}
+		else
+		{
+			LUT[i] = (brightness + i);
+		}
+	}
 
 	for (auto i = 0; i < my_image->get_width() * my_image->get_height(); i++) {
 		ImageMisc::GetPixel(my_image->get_data(), my_image->get_width(), i % my_image->get_width(), i / my_image->get_width(), &r, &g, &b, &a);
-		if (r + brightness < 0)
-			output_image_data.push_back(0);
-		//output_image_data.emplace_back(0);
-		else if (r + brightness > 255)
-			output_image_data.push_back(255);
-		else
-			output_image_data.push_back(r + brightness);
-
-		if (g + brightness < 0)
-			output_image_data.push_back(0);
-		else if (g + brightness > 255)
-			output_image_data.push_back(255);
-		else
-			output_image_data.push_back(g + brightness);
-
-		if (b + brightness < 0)
-			output_image_data.push_back(0);
-		else if (b + brightness > 255)
-			output_image_data.push_back(255);
-		else
-			output_image_data.push_back(b + brightness);
-
+		output_image_data.push_back(LUT[r]);
+		output_image_data.push_back(LUT[g]);
+		output_image_data.push_back(LUT[b]);
 		output_image_data.push_back(a);
 	}
 	ImageMisc::LoadTextureFromData(output_image_data.data(), &my_image->get_texture(), my_image->get_width(), my_image->get_height());
