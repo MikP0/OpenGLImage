@@ -61,11 +61,13 @@
 
     unsigned char* ImageMisc::LoadPictureData(const char* filename, int* x, int* y, int* n)
     {
-    	//auto data = stbi_load(filename, x, y, n, 4);
-        //return std::vector<unsigned char>(data, data + (*x * *y));
     	return stbi_load(filename, x, y, n, 4);
     }
 
+	unsigned char* ImageMisc::LoadPictureGreyData(const char* filename, int* x, int* y, int* n)
+	{
+		return stbi_load(filename, x, y, n, 1);
+	}
 
     void ImageMisc::GetPixel(stbi_uc* image, size_t imageWidth, size_t x, size_t y, unsigned char* r, unsigned char* g, unsigned char* b, unsigned char* a)
     {

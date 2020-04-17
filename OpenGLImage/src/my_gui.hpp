@@ -121,6 +121,9 @@ namespace my_gui
 
 		static bool filt_roberts = false;
 
+		static bool show_fft_button = false;
+		static bool show_fft = false;
+
 		ImGui::NextColumn();
 		if (show_histogram) {
 			if (ImGui::CollapsingHeader("Histograms")) {
@@ -169,7 +172,100 @@ namespace my_gui
 			ImGui::Checkbox("FilterRoberts", &filt_roberts);		
 		}
 
+		if (show_fft) {
+			ImGui::Begin("FFT");
+			static int page = 1;
+			ImGui::Columns(3);
+			if (ImGui::Button("Phase")) {
+				page = 1;
+			}
+			ImGui::NextColumn();
+			if (ImGui::Button("Magnitude")) {
+				page = 2;
+			}
+			ImGui::NextColumn();
+			if (ImGui::Button("Filters")) {
+				page = 3;
+			}
+			ImGui::Columns();
+			switch (page) {
+				case 1:
+					ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(my_image->get_fftPhase_texture())),
+						ImVec2(my_image->get_width() * my_image->get_size(), my_image->get_height() * my_image->get_size()));
+					break;
+				case 2:
+					ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(my_image->get_fftMagnitude_texture())),
+						ImVec2(my_image->get_width() * my_image->get_size(), my_image->get_height() * my_image->get_size()));
+					break;
+				case 3:
+					static int group = 0;
+					static bool isLowpass = false;
+					static int radius = 0;
+					static int size = 0;
 
+					static float angle = 0.0;
+					static float angleOffset = 0.0;
+
+					static int k = 0;
+					static int l = 0;
+
+					ImGui::RadioButton("Lowpass Filter", &group, 0);
+					ImGui::RadioButton("Highpass Filter", &group, 1);
+					ImGui::RadioButton("Bandpass Filter", &group, 2);
+					ImGui::RadioButton("Bandstop Filter", &group, 3);
+					ImGui::RadioButton("Edge Detection Filter", &group, 4);
+					ImGui::RadioButton("Spectrum Filter", &group, 5);
+
+					switch (group)
+					{
+					case 0:
+						ImGui::SliderInt("Radius", &radius, 0, 250);
+						if (ImGui::Button("Proceed")) {
+							ImageEditor::fft_filter_lowpass(my_image, radius);
+						}
+						break;
+					case 1:
+						ImGui::SliderInt("Radius", &radius, 0, 250);
+						if (ImGui::Button("Proceed")) {
+							ImageEditor::fft_filter_highpass(my_image, radius);
+						}
+						break;
+					case 2:
+						ImGui::SliderInt("Radius", &radius, 0, 250);
+						ImGui::SliderInt("Size", &size, 0, 250);
+						if (ImGui::Button("Proceed")) {
+							ImageEditor::fft_filter_bandpass(my_image, radius, size);
+						}
+						break;
+					case 3:
+						ImGui::SliderInt("Radius", &radius, 0, 250);
+						ImGui::SliderInt("Size", &size, 0, 250);
+						if (ImGui::Button("Proceed")) {
+							ImageEditor::fft_filter_bandstop(my_image, radius, size);
+						}
+						break;
+					case 4:
+						ImGui::SliderAngle("Angle", &angle);
+						ImGui::SliderAngle("Angle offset", &angleOffset);
+						ImGui::SliderInt("Radius", &radius, 0, 250);
+						if (ImGui::Button("Proceed")) {
+							ImageEditor::fft_filter_edgedetect(my_image, angle, angleOffset, radius);
+						}
+						break;
+					case 5:
+						ImGui::SliderInt("Horizontal", &k, 0, 512);
+						ImGui::SliderInt("Vertical", &l, 0, 512);
+						if (ImGui::Button("Proceed")) {
+							ImageEditor::fft_filter_spectrum(my_image, k, l);
+						}
+						break;
+					}
+					
+			}
+
+
+			ImGui::End();
+		}
 		if (ImGui::Button("Proceed"))
 		{
 			ImageEditor::change_brightness(my_image, brightness);
@@ -203,6 +299,13 @@ namespace my_gui
 				ImageEditor::filter_roberts(my_image, 3);
 
 			show_histogram = true;
+			show_fft_button = true;
+		}
+		if (show_fft_button) {
+			if (ImGui::Button("FFT")) {
+				ImageEditor::_2dfft(my_image);
+				show_fft = true;
+			}
 		}
 	}
 

@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <map>
+#include <complex>
 
 Image::Image()
 = default;
@@ -12,10 +13,12 @@ Image::Image(std::string filename)
 	this->size_ = 1;
 	ImageMisc::LoadTextureFromFile(this->filename_.c_str(), &this->texture_, &this->width_, &this->height_);
 	this->data_ = ImageMisc::LoadPictureData(this->filename_.c_str(), &this->width_, &this->height_, &this->channels_);
+	this->greyData_ = ImageMisc::LoadPictureGreyData(this->filename_.c_str(), &this->width_, &this->height_, &this->channels_);
 	std::vector<unsigned char> temp;
 	this->main_data_ = std::vector<unsigned char>(width_ * height_ * 4);
 	this->save_path_.append("result_images/");
 	this->save_path_.append(std::filesystem::u8path(filename_).filename().u8string());
+	//this->fftData_ = std::vector<std::complex<unsigned char>>(512*512 + 512);
 }
 
 Image::Image(unsigned char* data, const int width, const int height)
@@ -79,6 +82,16 @@ void Image::set_data(unsigned char* data)
 float Image::get_size() const
 {
 	return size_;
+}
+
+void Image::set_grey_data(unsigned char* data)
+{
+	this->greyData_ = data;
+}
+
+unsigned char* Image::get_grey_data() const
+{
+	return this->greyData_;
 }
 
 void Image::set_size(float size)
@@ -193,4 +206,64 @@ std::vector<float> Image::getReds(Colors color)
 			sum += histogram[i];
 		}
 		return sum;
+	}
+
+	GLuint& Image::get_fftPhase_texture()
+	{
+		return fftPhaseTexture_;
+	}
+
+	void Image::set_fftPhase_texture(GLuint texture)
+	{
+		fftPhaseTexture_ = texture;
+	}
+
+	GLuint& Image::get_fftMagnitude_texture()
+	{
+		return fftMagnitudeTexture_;
+	}
+
+	void Image::set_fftMagnitude_texture(GLuint texture)
+	{
+		fftMagnitudeTexture_ = texture;
+	}
+
+	GLuint& Image::get_invfft_texture()
+	{
+		return invfftTexture_;
+	}
+
+	void Image::set_invfft_texture(GLuint texture)
+	{
+		invfftTexture_ = texture;
+	}
+
+	std::vector<unsigned char> Image::get_fftPhase_data()
+	{
+		return fftPhaseData_;
+	}
+
+	void Image::set_fftPhase_data(std::vector<unsigned char> data)
+	{
+		fftPhaseData_ = data;
+	}
+
+	std::vector<unsigned char> Image::get_fftMagnitude_data()
+	{
+		return fftMagnitudeData_;
+	}
+
+	void Image::set_fftMagnitude_data(std::vector<unsigned char> data)
+	{
+		fftMagnitudeData_ = data;
+	}
+
+	std::vector<std::vector<std::complex<double>>> Image::get_fftData()
+	{
+		return fftData_;
+	}
+
+	void Image::set_fftData(std::vector<std::vector<std::complex<double>>> data)
+	{
+		fftData_ = data;
 	}

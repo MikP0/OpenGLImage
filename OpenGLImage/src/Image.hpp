@@ -6,6 +6,7 @@
 
 
 #include "ImageLoader.hpp"
+#include <complex>
 
 enum Colors
 {
@@ -31,6 +32,8 @@ public:
 	unsigned char* get_data() const;
 	void set_data(unsigned char* data);
 	float get_size() const;
+	void set_grey_data(unsigned char* data);
+	unsigned char* get_grey_data() const;
 	void set_size(float size);
 	std::string get_filename() const;
 	std::vector<unsigned char> get_main_data() const;
@@ -47,6 +50,19 @@ public:
 	std::vector<float> get_blue_histogram() const;
 	void set_blue_histogram(const std::vector<float>& blue_histogram);
 	float sum_histogram_elements(Colors color, int n) const;
+	GLuint& get_fftPhase_texture();
+	void set_fftPhase_texture(GLuint texture);
+	GLuint& get_fftMagnitude_texture();
+	void set_fftMagnitude_texture(GLuint texture);
+	GLuint& get_invfft_texture();
+	void set_invfft_texture(GLuint texture);
+	std::vector <unsigned char> get_fftPhase_data();
+	void set_fftPhase_data(std::vector<unsigned char> data);
+	std::vector <unsigned char> get_fftMagnitude_data();
+	void set_fftMagnitude_data(std::vector<unsigned char> data);
+	std::vector<std::vector<std::complex<double>>> get_fftData();
+	void set_fftData(std::vector<std::vector<std::complex<double>>> data);
+
 
 private:
 	int height_{};
@@ -55,11 +71,18 @@ private:
 	GLuint texture_{};
 	std::string filename_{};
 	unsigned char* data_{};
+	unsigned char* greyData_{};
 	std::vector<unsigned char> main_data_{};
 	float size_{};
 	std::string save_path_{};
 	std::vector<float> red_histogram_;
 	std::vector<float> green_histogram_;
 	std::vector<float> blue_histogram_;
+	GLuint fftPhaseTexture_{};
+	GLuint fftMagnitudeTexture_{};
+	std::vector <unsigned char> fftPhaseData_;
+	std::vector <unsigned char> fftMagnitudeData_;
+	GLuint invfftTexture_{};
+	std::vector<std::vector<std::complex<double>>> fftData_;
 };
 
