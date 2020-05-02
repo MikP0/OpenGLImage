@@ -22,6 +22,7 @@ public:
 	static void fft_filter_bandstop(const std::shared_ptr<Image>& my_image, int radius, int size);
 	static void fft_filter_edgedetect(const std::shared_ptr<Image>& my_image, double filterAngle, double filterAngleOffset, int filterRadius);
 	static void fft_filter_spectrum(const std::shared_ptr<Image>& my_image, int k, int l);
+	static void region_split_merge(const std::shared_ptr<Image>& my_image, int splitValueSpliting, int splitValueMerging, int minSizeOfPixelsGroup, int& numOfMask);
 };
 
  

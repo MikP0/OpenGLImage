@@ -124,6 +124,8 @@ namespace my_gui
 		static bool show_fft_button = false;
 		static bool show_fft = false;
 
+		static int number_of_groups_after_split_and_merge = 0;
+
 		ImGui::NextColumn();
 		if (show_histogram) {
 			if (ImGui::CollapsingHeader("Histograms")) {
@@ -209,12 +211,17 @@ namespace my_gui
 					static int k = 0;
 					static int l = 0;
 
+					static int ssv = 400;
+					static int msv = 400;
+					static int mpg = 16;
+
 					ImGui::RadioButton("Lowpass Filter", &group, 0);
 					ImGui::RadioButton("Highpass Filter", &group, 1);
 					ImGui::RadioButton("Bandpass Filter", &group, 2);
 					ImGui::RadioButton("Bandstop Filter", &group, 3);
 					ImGui::RadioButton("Edge Detection Filter", &group, 4);
 					ImGui::RadioButton("Spectrum Filter", &group, 5);
+					ImGui::RadioButton("Region Split & Merge", &group, 6);
 
 					switch (group)
 					{
@@ -257,6 +264,19 @@ namespace my_gui
 						ImGui::SliderInt("Vertical", &l, 0, 512);
 						if (ImGui::Button("Proceed")) {
 							ImageEditor::fft_filter_spectrum(my_image, k, l);
+						}
+						break;
+					case 6:
+						ImGui::SliderInt("Slice split value", &ssv, 0, 750);
+						ImGui::SliderInt("Merge split value", &msv, 0, 750);
+						ImGui::InputInt("Min pixels group", &mpg, 0, 512);
+
+						std::string s = "Number of created masks: " + std::to_string(number_of_groups_after_split_and_merge);
+						char const* pchar = s.c_str();
+						ImGui::Text(pchar);
+
+						if (ImGui::Button("Proceed")) {
+							ImageEditor::region_split_merge(my_image, 500, 500, 16, number_of_groups_after_split_and_merge);
 						}
 						break;
 					}
