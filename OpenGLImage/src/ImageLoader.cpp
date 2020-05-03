@@ -79,6 +79,16 @@
         *a = pixelOffset[3]; //8 >= 4 ? pixelOffset[3] : 0xff;
     }
 
+	void ImageMisc::GetPixelXY(stbi_uc* image, size_t imageWidth, size_t x, size_t y, unsigned char* r, unsigned char* g, unsigned char* b, unsigned char* a)
+	{
+		unsigned bytePerPixel = 4;
+		unsigned char* pixelOffset = image + (x * imageWidth + y) * bytePerPixel;
+		*r = pixelOffset[0];
+		*g = pixelOffset[1];
+		*b = pixelOffset[2];
+		*a = pixelOffset[3]; //8 >= 4 ? pixelOffset[3] : 0xff;
+	}
+
 	void ImageMisc::GetPixelNeighbourhood(stbi_uc* image, size_t imageWidth, int poi, int matrix_size, std::shared_ptr<std::vector<Pixel>> pixel_neighbourhood, int &centre_point)
 	{
 		unsigned bytePerPixel = 4;

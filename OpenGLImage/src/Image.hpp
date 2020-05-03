@@ -40,6 +40,7 @@ public:
 	void set_main_data(std::vector<unsigned char> main_data);
 	int get_channels() const;
 	void set_channels(int channels);
+	std::string get_masks_path() const;
 	std::string get_save_path() const;
 	void set_save_path(const std::string& save_path);
 	std::vector<float> getReds(Colors Red);
@@ -75,6 +76,7 @@ private:
 	std::vector<unsigned char> main_data_{};
 	float size_{};
 	std::string save_path_{};
+	std::string masks_path_{};
 	std::vector<float> red_histogram_;
 	std::vector<float> green_histogram_;
 	std::vector<float> blue_histogram_;

@@ -19,6 +19,8 @@ Image::Image(std::string filename)
 	this->save_path_.append("result_images/");
 	this->save_path_.append(std::filesystem::u8path(filename_).filename().u8string());
 	//this->fftData_ = std::vector<std::complex<unsigned char>>(512*512 + 512);
+	this->masks_path_.append("masks/");
+	this->masks_path_.append(std::filesystem::u8path(filename_).filename().u8string());
 }
 
 Image::Image(unsigned char* data, const int width, const int height)
@@ -117,6 +119,13 @@ int Image::get_channels() const
 void Image::set_channels(int channels)
 {
 	channels_ = channels;
+}
+
+std::string Image::get_masks_path() const
+{
+	if (masks_path_.length() > 0)
+		return masks_path_;
+	return filename_;
 }
 
 std::string Image::get_save_path() const

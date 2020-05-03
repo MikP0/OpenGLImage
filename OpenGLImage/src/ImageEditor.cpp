@@ -304,7 +304,7 @@ void ImageEditor::filter_median(const std::shared_ptr<Image>& my_image, int matr
 				vec.push_back(pixel_vector->at(j).g);
 			}
 
-			std::sort(vec.begin(), vec.end()); 
+			std::sort(vec.begin(), vec.end());
 			g_temp = vec.at(vec.size() / 2);
 			vec.clear();
 
@@ -507,10 +507,10 @@ void ImageEditor::filter_roberts(const std::shared_ptr<Image>& my_image, int mat
 
 			temp_pixel = pixel_vector->at(center);
 
-			r_temp = powf(powf((temp_pixel.r - pixel_vector->at(pixel_vector->size() - 1).r), 2.0f) + powf(pixel_vector->at(center + matrix_size).r - pixel_vector->at(center + 1).r,2.0f), 1.0f/2.0f);
-			g_temp = powf(powf((temp_pixel.g - pixel_vector->at(pixel_vector->size() - 1).g), 2.0f) + powf(pixel_vector->at(center + matrix_size).g - pixel_vector->at(center + 1).g,2.0f), 1.0f/2.0f);
-			b_temp = powf(powf((temp_pixel.b - pixel_vector->at(pixel_vector->size() - 1).b), 2.0f) + powf(pixel_vector->at(center + matrix_size).b - pixel_vector->at(center + 1).b,2.0f), 1.0f/2.0f);
-		
+			r_temp = powf(powf((temp_pixel.r - pixel_vector->at(pixel_vector->size() - 1).r), 2.0f) + powf(pixel_vector->at(center + matrix_size).r - pixel_vector->at(center + 1).r, 2.0f), 1.0f / 2.0f);
+			g_temp = powf(powf((temp_pixel.g - pixel_vector->at(pixel_vector->size() - 1).g), 2.0f) + powf(pixel_vector->at(center + matrix_size).g - pixel_vector->at(center + 1).g, 2.0f), 1.0f / 2.0f);
+			b_temp = powf(powf((temp_pixel.b - pixel_vector->at(pixel_vector->size() - 1).b), 2.0f) + powf(pixel_vector->at(center + matrix_size).b - pixel_vector->at(center + 1).b, 2.0f), 1.0f / 2.0f);
+
 
 			ImageMisc::GetPixel(temp_image->get_data(), my_image->get_width(), i % my_image->get_width(), i / my_image->get_width(), &r, &g, &b, &a);
 			a_val = a;
@@ -574,7 +574,7 @@ bool check_border_for_filter(int i, int matrix_size, std::shared_ptr<Image> imag
 {
 	if (matrix_size == 3)
 	{
-		if (!(i % image->get_height() == 0 || i % image->get_height() == image->get_height() - 1 || i < image->get_width() || i > image->get_width()* image->get_height() - image->get_height()))
+		if (!(i % image->get_height() == 0 || i % image->get_height() == image->get_height() - 1 || i < image->get_width() || i > image->get_width() * image->get_height() - image->get_height()))
 		{
 			return true;
 		}
@@ -585,7 +585,7 @@ bool check_border_for_filter(int i, int matrix_size, std::shared_ptr<Image> imag
 	}
 	else if (matrix_size == 5)
 	{
-		if (!(i % image->get_height() == 0 || i % image->get_height() == image->get_height() - 1 || i < image->get_width() || i > image->get_width()* image->get_height() - image->get_height() || i % image->get_height() == 1 || i % image->get_height() == image->get_height() - 2 || i < image->get_width() + image->get_width() || i > image->get_width() * image->get_height() - image->get_height() - image->get_height()))
+		if (!(i % image->get_height() == 0 || i % image->get_height() == image->get_height() - 1 || i < image->get_width() || i > image->get_width() * image->get_height() - image->get_height() || i % image->get_height() == 1 || i % image->get_height() == image->get_height() - 2 || i < image->get_width() + image->get_width() || i > image->get_width() * image->get_height() - image->get_height() - image->get_height()))
 		{
 			return true;
 		}
@@ -641,7 +641,7 @@ void fft(std::vector<std::complex<double>>& x)
 	}
 }
 
-void swapQuadrants(std::vector<std::vector<std::complex<double>>>& complexData) 
+void swapQuadrants(std::vector<std::vector<std::complex<double>>>& complexData)
 {
 	int size = complexData.size();
 
@@ -832,7 +832,7 @@ void updatePhaseMagnitude(const std::shared_ptr<Image>& my_image, std::vector<st
 	ImageMisc::LoadTextureFromData(magnitudeValueVector.data(), &my_image->get_fftMagnitude_texture(), 512, 512);
 }
 
-void ImageEditor::_2dfft(const std::shared_ptr<Image> & my_image) 
+void ImageEditor::_2dfft(const std::shared_ptr<Image>& my_image)
 {
 	std::vector<std::vector<std::complex<double>>> data(my_image->get_width(), std::vector<std::complex<double>>(my_image->get_height()));
 
@@ -840,7 +840,7 @@ void ImageEditor::_2dfft(const std::shared_ptr<Image> & my_image)
 	{
 		for (int x = 0; x < my_image->get_width(); x++)
 		{
-			data[y][x] = my_image->get_grey_data()[x + y * my_image->get_width() ];
+			data[y][x] = my_image->get_grey_data()[x + y * my_image->get_width()];
 		}
 	}
 
@@ -890,8 +890,8 @@ void ImageEditor::_2dfft(const std::shared_ptr<Image> & my_image)
 
 		}
 	}
-	
-	
+
+
 	my_image->set_fftPhase_data(phaseValueVector);
 	my_image->set_fftMagnitude_data(magnitudeValueVector);
 	ImageMisc::LoadTextureFromData(my_image->get_fftPhase_data().data(), &my_image->get_fftPhase_texture(), 512, 512);
@@ -925,7 +925,7 @@ void ImageEditor::fft_filter_lowpass(const std::shared_ptr<Image>& my_image, int
 
 			if (std::sqrt(widthFactor + heightFactor) > 1)
 			{
-				complexData[i][j] = std::complex(0,0);
+				complexData[i][j] = std::complex(0, 0);
 			}
 		}
 	}
@@ -1140,7 +1140,7 @@ void ImageEditor::fft_filter_spectrum(const std::shared_ptr<Image>& my_image, in
 	{
 		for (int j = 0; j < imageWidth; j++)
 		{
-			complexData[i][j] *= std::exp( std::complex<double>(0, (-i * k * 2 * std::acos(-1) / imageHeight) + (-j * l * 2 * std::acos(-1) / imageWidth) + (std::acos(-1) * (k + l))));
+			complexData[i][j] *= std::exp(std::complex<double>(0, (-i * k * 2 * std::acos(-1) / imageHeight) + (-j * l * 2 * std::acos(-1) / imageWidth) + (std::acos(-1) * (k + l))));
 		}
 	}
 
@@ -1150,5 +1150,563 @@ void ImageEditor::fft_filter_spectrum(const std::shared_ptr<Image>& my_image, in
 }
 
 
+void SplitAndM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int minSizeOfGroup);
+void MergeM(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue);
+void AltMerge(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue);
+bool ShouldSplitMoreM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, int minSizeOfGroup);
+bool ShouldMergeM(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue);
+bool ShouldMergeMAlt(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue);
+
+void WriteMasksFiles(std::vector<ImageMisc::Pixel> pixels, int numberOfGroups, std::string masksSavePath);
+
+void ImageEditor::region_split_merge(const std::shared_ptr<Image>& my_image, int splitValueSpliting, int splitValueMerging, int minSizeOfPixelsGroup, int& numOfMask)
+{
+	std::shared_ptr<Image> temp_image = std::make_shared<Image>(my_image->get_save_path().c_str());
+
+	std::vector<unsigned char> output_image_data;
+
+	unsigned char r = 0;
+	unsigned char g = 0;
+	unsigned char b = 0;
+	unsigned char a = 0;
+
+	int r_val = 0;
+	int g_val = 0;
+	int b_val = 0;
+	int a_val = 0;
+
+	std::vector<ImageMisc::Pixel> pixel_vector;
+
+	std::vector<std::vector<ImageMisc::Pixel>> pixels_vector;
+
+	int indexIterator = 0;
+	for (auto x = 0; x < temp_image->get_width(); x++)
+	{
+		pixels_vector.push_back(std::vector<ImageMisc::Pixel>());
+
+		for (auto y = 0; y < temp_image->get_height(); y++)
+		{
+			ImageMisc::GetPixelXY(temp_image->get_data(), my_image->get_width(), x, y, &r, &g, &b, &a);
+
+			pixels_vector[x].push_back(ImageMisc::Pixel(r, g, b, a, indexIterator, 0, x, y));
+			indexIterator++;
+		}
+	}
 
 
+	std::vector<std::vector<std::vector<ImageMisc::Pixel>>> groups;
+	SplitAndM(pixels_vector, splitValueSpliting, groups, minSizeOfPixelsGroup);
+
+	MergeM(groups, splitValueMerging);
+	AltMerge(groups, splitValueMerging);
+
+	// u³ó¿ wymieszanae piksele w tabele
+	std::vector<ImageMisc::Pixel> pixel_vector_new(pixels_vector.size() * pixels_vector.size());
+	int countAll = 0;
+
+	for (auto i = 0; i < groups.size(); i++)
+	{
+		for (int j = 0; j < groups[i].size(); j++)
+		{
+			for (int k = 0; k < groups[i][j].size(); k++)
+			{
+				pixel_vector_new[groups[i][j][k].Index] = groups[i][j][k];
+
+				countAll++;
+			}
+		}
+	}
+
+
+
+	//malowanie pikseli krañcowych
+	bool paint = false;
+	for (int i = 0; i < pixel_vector_new.size(); i++)
+	{
+		paint = false;
+
+		if (i < (sqrt(pixel_vector_new.size()) + 15) || i >(pixel_vector_new.size() - sqrt(pixel_vector_new.size() - 15)))
+		{
+			continue;
+		}
+
+		if (pixel_vector_new[i].Group != pixel_vector_new[i + 1].Group)
+		{
+			paint = true;
+		}
+		else if (pixel_vector_new[i].Group != pixel_vector_new[i - 1].Group)
+		{
+			paint = true;
+		}
+		else if (pixel_vector_new[i].Group != pixel_vector_new[i + sqrt(pixel_vector_new.size())].Group)
+		{
+			paint = true;
+		}
+		else if (pixel_vector_new[i].Group != pixel_vector_new[i - sqrt(pixel_vector_new.size())].Group)
+		{
+			paint = true;
+		}
+
+
+		if (paint)
+		{
+			pixel_vector_new[i].r = 255;
+			pixel_vector_new[i].g = 255;
+			pixel_vector_new[i].b = 255;
+		}
+	}
+
+
+	for (auto k = 0; k < pixel_vector_new.size(); k++)
+	{
+		auto tempPixel = pixel_vector_new[k];
+
+		r_val = tempPixel.r;
+		g_val = tempPixel.g;
+		b_val = tempPixel.b;
+		a_val = tempPixel.a;;
+
+		output_image_data.push_back(r_val);
+		output_image_data.push_back(g_val);
+		output_image_data.push_back(b_val);
+		output_image_data.push_back(a_val);
+	}
+
+	ImageMisc::LoadTextureFromData(output_image_data.data(), &my_image->get_texture(), my_image->get_width(), my_image->get_height());
+	ImageMisc::WriteImage(my_image->get_save_path().c_str(), 512, 512, 4, output_image_data.data());
+	my_image->set_main_data(output_image_data);
+
+	numOfMask = groups.size();
+
+	WriteMasksFiles(pixel_vector_new, numOfMask, my_image->get_masks_path());
+}
+
+
+// tutaj
+void SplitAndM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int minSizeOfGroup)
+{
+	int lenghtOfXLabel = pixels.size() / 2;
+
+	std::vector<std::vector<ImageMisc::Pixel>> pixels_1(lenghtOfXLabel);
+	std::vector<std::vector<ImageMisc::Pixel>> pixels_2(lenghtOfXLabel);
+	std::vector<std::vector<ImageMisc::Pixel>> pixels_3(lenghtOfXLabel);
+	std::vector<std::vector<ImageMisc::Pixel>> pixels_4(lenghtOfXLabel);
+
+	int pix_1_iter = 0;
+	int pix_2_iter = 0;
+	int pix_3_iter = 0;
+	int pix_4_iter = 0;
+
+	for (int x = 0; x < pixels.size(); x++)
+	{
+		for (int y = 0; y < pixels[x].size(); y++)
+		{
+			if (x < lenghtOfXLabel && y < lenghtOfXLabel)
+			{
+				pixels_1[pix_1_iter / (lenghtOfXLabel)].push_back(pixels[x][y]);
+				pix_1_iter++;
+			}
+			else if (x >= lenghtOfXLabel && y < lenghtOfXLabel)
+			{
+				pixels_2[pix_2_iter / (lenghtOfXLabel)].push_back(pixels[x][y]);
+				pix_2_iter++;
+			}
+			else if (x < lenghtOfXLabel && y >= lenghtOfXLabel)
+			{
+				pixels_3[pix_3_iter / (lenghtOfXLabel)].push_back(pixels[x][y]);
+				pix_3_iter++;
+			}
+			else if (x >= lenghtOfXLabel && y >= lenghtOfXLabel)
+			{
+				pixels_4[pix_4_iter / (lenghtOfXLabel)].push_back(pixels[x][y]);
+				pix_4_iter++;
+			}
+		}
+	}
+
+
+	if (ShouldSplitMoreM(pixels_1, splitValue, minSizeOfGroup))
+	{
+		SplitAndM(pixels_1, splitValue, groups_vector, minSizeOfGroup);
+	}
+	else
+	{
+		for (int i = 0; i < pixels_1.size(); i++)
+		{
+			for (int j = 0; j < pixels_1[i].size(); j++)
+			{
+				pixels_1[i][j].Group = groups_vector.size();
+			}
+		}
+
+		groups_vector.push_back(pixels_1);
+	}
+
+	if (ShouldSplitMoreM(pixels_2, splitValue, minSizeOfGroup))
+	{
+		SplitAndM(pixels_2, splitValue, groups_vector, minSizeOfGroup);
+	}
+	else
+	{
+		for (int i = 0; i < pixels_2.size(); i++)
+		{
+			for (int j = 0; j < pixels_2[i].size(); j++)
+			{
+				pixels_2[i][j].Group = groups_vector.size();
+			}
+		}
+
+		groups_vector.push_back(pixels_2);
+	}
+
+	if (ShouldSplitMoreM(pixels_3, splitValue, minSizeOfGroup))
+	{
+		SplitAndM(pixels_3, splitValue, groups_vector, minSizeOfGroup);
+	}
+	else
+	{
+		for (int i = 0; i < pixels_3.size(); i++)
+		{
+			for (int j = 0; j < pixels_3[i].size(); j++)
+			{
+				pixels_3[i][j].Group = groups_vector.size();
+			}
+		}
+
+		groups_vector.push_back(pixels_3);
+	}
+
+	if (ShouldSplitMoreM(pixels_4, splitValue, minSizeOfGroup))
+	{
+		SplitAndM(pixels_4, splitValue, groups_vector, minSizeOfGroup);
+	}
+	else
+	{
+		for (int i = 0; i < pixels_4.size(); i++)
+		{
+			for (int j = 0; j < pixels_4[i].size(); j++)
+			{
+				pixels_4[i][j].Group = groups_vector.size();
+			}
+		}
+
+		groups_vector.push_back(pixels_4);
+	}
+}
+
+void MergeM(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue)
+{
+	int iterator = groups_vector.size();
+	int i = 0;
+	while (i < iterator)
+	{
+		if (ShouldMergeM(groups_vector[i], groups_vector[i + 1], splitValue))
+		{
+			for (int j = 0; j < groups_vector[i + 1].size(); j++)
+			{
+				/*for (int w = 0; w < groups_vector[i + 1][j].size(); w++)
+				{
+					groups_vector[i + 1][j][w].Group = i;
+				}*/
+
+				groups_vector[i].push_back(groups_vector[i + 1][j]);
+			}
+
+			groups_vector.erase(groups_vector.begin() + (i + 1));
+		}
+		else
+		{
+			i++;
+		}
+
+		iterator--;
+	}
+
+
+	for (auto i = 0; i < groups_vector.size(); i++)
+	{
+		for (int j = 0; j < groups_vector[i].size(); j++)
+		{
+			for (int k = 0; k < groups_vector[i][j].size(); k++)
+			{
+				groups_vector[i][j][k].Group = i;
+			}
+		}
+	}
+}
+
+void AltMerge(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue)
+{
+	for (int i = 0; i < groups_vector.size(); i++)
+	{
+		for (int j = 0; j < groups_vector.size(); j++)
+		{
+			if (i == j)
+			{
+				continue;
+			}
+
+
+			if (ShouldMergeMAlt(groups_vector[i], groups_vector[j], splitValue))
+			{
+				for (int k = 0; k < groups_vector[j].size(); k++)
+				{
+					groups_vector[i].push_back(groups_vector[j][k]);
+				}
+
+				groups_vector.erase(groups_vector.begin() + (j));
+
+				//i = 0;
+				//j = 0;
+			}
+		}
+	}
+
+
+
+	for (auto i = 0; i < groups_vector.size(); i++)
+	{
+		for (int j = 0; j < groups_vector[i].size(); j++)
+		{
+			for (int k = 0; k < groups_vector[i][j].size(); k++)
+			{
+				groups_vector[i][j][k].Group = i;
+			}
+		}
+	}
+}
+
+bool ShouldSplitMoreM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, int minSizeOfGroup)
+{
+	int max = 0;
+	int min = 1000;
+
+	for (auto x = 0; x < pixels.size(); x++)
+	{
+		for (auto y = 0; y < pixels[x].size(); y++)
+		{
+			if ((pixels[x][y].r + pixels[x][y].g + pixels[x][y].b) > max)
+			{
+				max = pixels[x][y].r + pixels[x][y].g + pixels[x][y].b;
+			}
+
+			if ((pixels[x][y].r + pixels[x][y].g + pixels[x][y].b) < min)
+			{
+				min = pixels[x][y].r + pixels[x][y].g + pixels[x][y].b;
+			}
+		}
+	}
+
+
+	if (max - min <= splitValue)
+	{
+		return false;
+	}
+	else
+	{
+		if (pixels.size() * pixels.size() > minSizeOfGroup)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
+
+bool ShouldMergeM(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue)
+{
+	int max_1 = 0;
+	int min_1 = 1000;
+
+	for (auto i = 0; i < group1.size(); i++)
+	{
+		for (auto j = 0; j < group1[i].size(); j++)
+		{
+			if ((group1[i][j].r + group1[i][j].g + group1[i][j].b) > max_1)
+			{
+				max_1 = group1[i][j].r + group1[i][j].g + group1[i][j].b;
+			}
+
+			if ((group1[i][j].r + group1[i][j].g + group1[i][j].b) < min_1)
+			{
+				min_1 = group1[i][j].r + group1[i][j].g + group1[i][j].b;
+			}
+		}
+	}
+
+
+	int max_2 = 0;
+	int min_2 = 1000;
+
+	for (auto i = 0; i < group2.size(); i++)
+	{
+		for (auto j = 0; j < group2[i].size(); j++)
+		{
+			if ((group2[i][j].r + group2[i][j].g + group2[i][j].b) > max_2)
+			{
+				max_2 = group2[i][j].r + group2[i][j].g + group2[i][j].b;
+			}
+
+			if ((group2[i][j].r + group2[i][j].g + group2[i][j].b) < min_2)
+			{
+				min_2 = group2[i][j].r + group2[i][j].g + group2[i][j].b;
+			}
+		}
+	}
+
+
+	if ((max_1 - min_2) <= splitValue && (max_2 - min_1) <= splitValue)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool ShouldMergeMAlt(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue)
+{
+	int max_1 = 0;
+	int min_1 = 1000;
+
+	for (auto i = 0; i < group1.size(); i++)
+	{
+		for (auto j = 0; j < group1[i].size(); j++)
+		{
+			if ((group1[i][j].r + group1[i][j].g + group1[i][j].b) > max_1)
+			{
+				max_1 = group1[i][j].r + group1[i][j].g + group1[i][j].b;
+			}
+
+			if ((group1[i][j].r + group1[i][j].g + group1[i][j].b) < min_1)
+			{
+				min_1 = group1[i][j].r + group1[i][j].g + group1[i][j].b;
+			}
+		}
+	}
+
+
+	int max_2 = 0;
+	int min_2 = 1000;
+
+	for (auto i = 0; i < group2.size(); i++)
+	{
+		for (auto j = 0; j < group2[i].size(); j++)
+		{
+			if ((group2[i][j].r + group2[i][j].g + group2[i][j].b) > max_2)
+			{
+				max_2 = group2[i][j].r + group2[i][j].g + group2[i][j].b;
+			}
+
+			if ((group2[i][j].r + group2[i][j].g + group2[i][j].b) < min_2)
+			{
+				min_2 = group2[i][j].r + group2[i][j].g + group2[i][j].b;
+			}
+		}
+	}
+
+	bool Neighbour = false;
+
+
+	if ((max_1 - min_2) <= splitValue && (max_2 - min_1) <= splitValue)
+	{
+
+		for (auto i = 0; i < group1.size(); i++)
+		{
+			for (auto j = 0; j < group1[i].size(); j++)
+			{
+
+				for (auto a = 0; a < group2.size(); a++)
+				{
+					for (auto b = 0; b < group2[a].size(); b++)
+					{
+						if (group1[i][j].X == group2[a][b].X)
+						{
+							if ((group1[i][j].Y == (group2[a][b].Y - 1)) || (group1[i][j].Y == (group2[a][b].Y + 1)))
+							{
+								Neighbour = true;
+							}
+						}
+						else if (group1[i][j].Y == group2[a][b].Y)
+						{
+							if ((group1[i][j].X == (group2[a][b].X - 1)) || (group1[i][j].X == (group2[a][b].X + 1)))
+							{
+								Neighbour = true;
+							}
+						}
+
+					}
+				}
+			}
+		}
+
+
+		if (Neighbour)
+		{
+			return true;
+		}
+
+
+		return false;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void WriteMasksFiles(std::vector<ImageMisc::Pixel> pixels, int numberOfGroups, std::string masksSavePath)
+{
+	std::vector<ImageMisc::Pixel> tempPixels = pixels;
+
+	std::vector<unsigned char> output_image_data;
+
+	int r_val = 0;
+	int g_val = 0;
+	int b_val = 0;
+	int a_val = 0;
+
+	for (int g = 0; g < numberOfGroups; g++)
+	{
+		for (int i = 0; i < pixels.size(); i++)
+		{
+			if (tempPixels[i].Group == g)
+			{
+				tempPixels[i].r = 255;
+				tempPixels[i].g = 255;
+				tempPixels[i].b = 255;
+			}
+			else
+			{
+				tempPixels[i].r = 0;
+				tempPixels[i].g = 0;
+				tempPixels[i].b = 0;
+			}
+		}
+
+		for (auto k = 0; k < tempPixels.size(); k++)
+		{
+			auto tempPixel = tempPixels[k];
+
+			r_val = tempPixel.r;
+			g_val = tempPixel.g;
+			b_val = tempPixel.b;
+			a_val = tempPixel.a;
+
+			output_image_data.push_back(r_val);
+			output_image_data.push_back(g_val);
+			output_image_data.push_back(b_val);
+			output_image_data.push_back(a_val);
+		}
+
+		std::string path = "masks/" + std::to_string(g) + ".bmp";
+
+		ImageMisc::WriteImage(path.c_str(), 512, 512, 4, output_image_data.data());
+
+		output_image_data.clear();
+		tempPixels = pixels;
+	}
+}
