@@ -21,6 +21,8 @@ Image::Image(std::string filename)
 	//this->fftData_ = std::vector<std::complex<unsigned char>>(512*512 + 512);
 	this->masks_path_.append("masks/");
 	this->masks_path_.append(std::filesystem::u8path(filename_).filename().u8string());
+
+	this->original_data_ = this->data_;
 }
 
 Image::Image(unsigned char* data, const int width, const int height)
@@ -76,9 +78,19 @@ unsigned char* Image::get_data() const
 	return data_;
 }
 
+unsigned char* Image::get_original_data() const
+{
+	return original_data_;
+}
+
 void Image::set_data(unsigned char* data)
 {
 	data_ = data;
+}
+
+void Image::set_original_data(unsigned char* data)
+{
+	original_data_ = data;
 }
 
 float Image::get_size() const

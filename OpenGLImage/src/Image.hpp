@@ -8,6 +8,8 @@
 #include "ImageLoader.hpp"
 #include <complex>
 
+#include <filesystem>
+
 enum Colors
 {
 	RED = 0,
@@ -30,7 +32,9 @@ public:
 	void set_texture(GLuint texture);
 	void set_filename(const char* filename);
 	unsigned char* get_data() const;
+	unsigned char* get_original_data() const;
 	void set_data(unsigned char* data);
+	void set_original_data(unsigned char* data);
 	float get_size() const;
 	void set_grey_data(unsigned char* data);
 	unsigned char* get_grey_data() const;
@@ -74,6 +78,7 @@ private:
 	unsigned char* data_{};
 	unsigned char* greyData_{};
 	std::vector<unsigned char> main_data_{};
+	unsigned char* original_data_{};
 	float size_{};
 	std::string save_path_{};
 	std::string masks_path_{};

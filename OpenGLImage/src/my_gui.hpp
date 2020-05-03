@@ -11,6 +11,7 @@ namespace my_gui
 	bool p_open = true;
 
 	ImGui::FileBrowser fileDialog;
+	ImGui::FileBrowser maskDialog;
 
 	void setup_file_dialog();
 	void create_image_view(std::vector<std::shared_ptr<Image>> my_image);
@@ -39,6 +40,9 @@ namespace my_gui
 	{
 		fileDialog.SetTitle("Open an image");
 		fileDialog.SetTypeFilters({ ".bmp" });
+
+		maskDialog.SetTitle("Select mask");
+		maskDialog.SetTypeFilters({ ".bmp" });
 	}
 	inline void create_frame()
 	{
@@ -64,7 +68,6 @@ namespace my_gui
 
 		static std::vector<std::shared_ptr<Image>> image_vector;
 		static bool show_output = false;
-
 
 		fileDialog.Display();
 		if (fileDialog.HasSelected())
@@ -125,6 +128,7 @@ namespace my_gui
 		static bool show_fft = false;
 
 		static int number_of_groups_after_split_and_merge = 0;
+		static bool was_masked_before = false;
 
 		ImGui::NextColumn();
 		if (show_histogram) {
@@ -214,6 +218,7 @@ namespace my_gui
 					static int ssv = 400;
 					static int msv = 400;
 					static int mpg = 16;
+					static std::shared_ptr<Image> mask_image;
 
 					ImGui::RadioButton("Lowpass Filter", &group, 0);
 					ImGui::RadioButton("Highpass Filter", &group, 1);
@@ -277,7 +282,28 @@ namespace my_gui
 
 						if (ImGui::Button("Proceed")) {
 							ImageEditor::region_split_merge(my_image, ssv, msv, mpg, number_of_groups_after_split_and_merge);
+							was_masked_before = false;
 						}
+						
+						if (number_of_groups_after_split_and_merge)
+						{
+							if (ImGui::Button("Add mask")) {
+								maskDialog.Open();
+							}
+
+							maskDialog.Display();
+							if (maskDialog.HasSelected())
+							{
+								std::cout << "Selected filename" << maskDialog.GetSelected().string() << std::endl;
+								mask_image = std::make_shared<Image>(maskDialog.GetSelected().string().c_str());
+								maskDialog.ClearSelected();
+
+								ImageEditor::add_mask(my_image, mask_image, was_masked_before);
+
+								mask_image = nullptr;
+							}
+						}
+
 						break;
 					}
 					

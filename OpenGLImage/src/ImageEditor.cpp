@@ -1149,14 +1149,12 @@ void ImageEditor::fft_filter_spectrum(const std::shared_ptr<Image>& my_image, in
 	ifft2d(complexData, my_image);
 }
 
-
-void SplitAndM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int minSizeOfGroup);
-void MergeM(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue);
-void AltMerge(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue);
-bool ShouldSplitMoreM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, int minSizeOfGroup);
-bool ShouldMergeM(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue);
-bool ShouldMergeMAlt(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue);
-
+void Split(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int minSizeOfGroup);
+void Merge(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue);
+void SecondMerge(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue);
+bool ShouldSplitMore(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, int minSizeOfGroup);
+bool ShouldMerge(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue);
+bool ShouldMergeSecond(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue);
 void WriteMasksFiles(std::vector<ImageMisc::Pixel> pixels, int numberOfGroups, std::string masksSavePath);
 
 void ImageEditor::region_split_merge(const std::shared_ptr<Image>& my_image, int splitValueSpliting, int splitValueMerging, int minSizeOfPixelsGroup, int& numOfMask)
@@ -1175,8 +1173,6 @@ void ImageEditor::region_split_merge(const std::shared_ptr<Image>& my_image, int
 	int b_val = 0;
 	int a_val = 0;
 
-	std::vector<ImageMisc::Pixel> pixel_vector;
-
 	std::vector<std::vector<ImageMisc::Pixel>> pixels_vector;
 
 	int indexIterator = 0;
@@ -1193,14 +1189,12 @@ void ImageEditor::region_split_merge(const std::shared_ptr<Image>& my_image, int
 		}
 	}
 
-
 	std::vector<std::vector<std::vector<ImageMisc::Pixel>>> groups;
-	SplitAndM(pixels_vector, splitValueSpliting, groups, minSizeOfPixelsGroup);
+	Split(pixels_vector, splitValueSpliting, groups, minSizeOfPixelsGroup);
 
-	MergeM(groups, splitValueMerging);
-	AltMerge(groups, splitValueMerging);
+	Merge(groups, splitValueMerging);
+	SecondMerge(groups, splitValueMerging);
 
-	// u³ó¿ wymieszanae piksele w tabele
 	std::vector<ImageMisc::Pixel> pixel_vector_new(pixels_vector.size() * pixels_vector.size());
 	int countAll = 0;
 
@@ -1217,10 +1211,9 @@ void ImageEditor::region_split_merge(const std::shared_ptr<Image>& my_image, int
 		}
 	}
 
+	std::vector<ImageMisc::Pixel> pixels_vector_masks = pixel_vector_new;
 
-
-	//malowanie pikseli krañcowych
-	bool paint = false;
+	bool paint;
 	for (int i = 0; i < pixel_vector_new.size(); i++)
 	{
 		paint = false;
@@ -1247,7 +1240,6 @@ void ImageEditor::region_split_merge(const std::shared_ptr<Image>& my_image, int
 			paint = true;
 		}
 
-
 		if (paint)
 		{
 			pixel_vector_new[i].r = 255;
@@ -1255,7 +1247,6 @@ void ImageEditor::region_split_merge(const std::shared_ptr<Image>& my_image, int
 			pixel_vector_new[i].b = 255;
 		}
 	}
-
 
 	for (auto k = 0; k < pixel_vector_new.size(); k++)
 	{
@@ -1277,13 +1268,10 @@ void ImageEditor::region_split_merge(const std::shared_ptr<Image>& my_image, int
 	my_image->set_main_data(output_image_data);
 
 	numOfMask = groups.size();
-
-	WriteMasksFiles(pixel_vector_new, numOfMask, my_image->get_masks_path());
+	WriteMasksFiles(pixels_vector_masks, numOfMask, my_image->get_masks_path());
 }
 
-
-// tutaj
-void SplitAndM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int minSizeOfGroup)
+void Split(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int minSizeOfGroup)
 {
 	int lenghtOfXLabel = pixels.size() / 2;
 
@@ -1325,9 +1313,9 @@ void SplitAndM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue
 	}
 
 
-	if (ShouldSplitMoreM(pixels_1, splitValue, minSizeOfGroup))
+	if (ShouldSplitMore(pixels_1, splitValue, minSizeOfGroup))
 	{
-		SplitAndM(pixels_1, splitValue, groups_vector, minSizeOfGroup);
+		Split(pixels_1, splitValue, groups_vector, minSizeOfGroup);
 	}
 	else
 	{
@@ -1342,9 +1330,9 @@ void SplitAndM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue
 		groups_vector.push_back(pixels_1);
 	}
 
-	if (ShouldSplitMoreM(pixels_2, splitValue, minSizeOfGroup))
+	if (ShouldSplitMore(pixels_2, splitValue, minSizeOfGroup))
 	{
-		SplitAndM(pixels_2, splitValue, groups_vector, minSizeOfGroup);
+		Split(pixels_2, splitValue, groups_vector, minSizeOfGroup);
 	}
 	else
 	{
@@ -1359,9 +1347,9 @@ void SplitAndM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue
 		groups_vector.push_back(pixels_2);
 	}
 
-	if (ShouldSplitMoreM(pixels_3, splitValue, minSizeOfGroup))
+	if (ShouldSplitMore(pixels_3, splitValue, minSizeOfGroup))
 	{
-		SplitAndM(pixels_3, splitValue, groups_vector, minSizeOfGroup);
+		Split(pixels_3, splitValue, groups_vector, minSizeOfGroup);
 	}
 	else
 	{
@@ -1376,9 +1364,9 @@ void SplitAndM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue
 		groups_vector.push_back(pixels_3);
 	}
 
-	if (ShouldSplitMoreM(pixels_4, splitValue, minSizeOfGroup))
+	if (ShouldSplitMore(pixels_4, splitValue, minSizeOfGroup))
 	{
-		SplitAndM(pixels_4, splitValue, groups_vector, minSizeOfGroup);
+		Split(pixels_4, splitValue, groups_vector, minSizeOfGroup);
 	}
 	else
 	{
@@ -1394,13 +1382,13 @@ void SplitAndM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue
 	}
 }
 
-void MergeM(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue)
+void Merge(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue)
 {
 	int iterator = groups_vector.size();
 	int i = 0;
 	while (i < iterator)
 	{
-		if (ShouldMergeM(groups_vector[i], groups_vector[i + 1], splitValue))
+		if (ShouldMerge(groups_vector[i], groups_vector[i + 1], splitValue))
 		{
 			for (int j = 0; j < groups_vector[i + 1].size(); j++)
 			{
@@ -1417,7 +1405,6 @@ void MergeM(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vect
 		iterator--;
 	}
 
-
 	for (auto i = 0; i < groups_vector.size(); i++)
 	{
 		for (int j = 0; j < groups_vector[i].size(); j++)
@@ -1430,7 +1417,7 @@ void MergeM(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vect
 	}
 }
 
-void AltMerge(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue)
+void SecondMerge(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vector, int splitValue)
 {
 	for (int i = 0; i < groups_vector.size(); i++)
 	{
@@ -1441,23 +1428,16 @@ void AltMerge(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_ve
 				continue;
 			}
 
-
-			if (ShouldMergeMAlt(groups_vector[i], groups_vector[j], splitValue))
+			if (ShouldMergeSecond(groups_vector[i], groups_vector[j], splitValue))
 			{
 				for (int k = 0; k < groups_vector[j].size(); k++)
 				{
 					groups_vector[i].push_back(groups_vector[j][k]);
 				}
-
 				groups_vector.erase(groups_vector.begin() + (j));
-
-				//i = 0;
-				//j = 0;
 			}
 		}
 	}
-
-
 
 	for (auto i = 0; i < groups_vector.size(); i++)
 	{
@@ -1471,7 +1451,7 @@ void AltMerge(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_ve
 	}
 }
 
-bool ShouldSplitMoreM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, int minSizeOfGroup)
+bool ShouldSplitMore(std::vector<std::vector<ImageMisc::Pixel>> pixels, int splitValue, int minSizeOfGroup)
 {
 	int max = 0;
 	int min = 1000;
@@ -1510,7 +1490,7 @@ bool ShouldSplitMoreM(std::vector<std::vector<ImageMisc::Pixel>> pixels, int spl
 	}
 }
 
-bool ShouldMergeM(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue)
+bool ShouldMerge(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue)
 {
 	int max_1 = 0;
 	int min_1 = 1000;
@@ -1562,7 +1542,7 @@ bool ShouldMergeM(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector
 	}
 }
 
-bool ShouldMergeMAlt(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue)
+bool ShouldMergeSecond(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vector<std::vector<ImageMisc::Pixel>> group2, int splitValue)
 {
 	int max_1 = 0;
 	int min_1 = 1000;
@@ -1638,12 +1618,10 @@ bool ShouldMergeMAlt(std::vector<std::vector<ImageMisc::Pixel>> group1, std::vec
 			}
 		}
 
-
 		if (Neighbour)
 		{
 			return true;
 		}
-
 
 		return false;
 	}
@@ -1658,6 +1636,10 @@ void WriteMasksFiles(std::vector<ImageMisc::Pixel> pixels, int numberOfGroups, s
 	std::vector<ImageMisc::Pixel> tempPixels = pixels;
 
 	std::vector<unsigned char> output_image_data;
+
+	std::filesystem::path path_to_clear("masks");
+	std::filesystem::remove_all(path_to_clear);
+	std::filesystem::create_directory("masks");
 
 	int r_val = 0;
 	int g_val = 0;
@@ -1704,4 +1686,90 @@ void WriteMasksFiles(std::vector<ImageMisc::Pixel> pixels, int numberOfGroups, s
 		output_image_data.clear();
 		tempPixels = pixels;
 	}
+}
+
+void ImageEditor::add_mask(const std::shared_ptr<Image>& my_image, const std::shared_ptr<Image>& mask_image, bool& was_masked)
+{
+	std::shared_ptr<Image> temp_image = std::make_shared<Image>(my_image->get_save_path().c_str());
+	std::shared_ptr<Image> temp_mask_image = std::make_shared<Image>(mask_image->get_filename());
+
+	std::vector<unsigned char> output_image_data;
+
+	unsigned char r = 0;
+	unsigned char g = 0;
+	unsigned char b = 0;
+	unsigned char a = 0;
+
+	int r_val = 0;
+	int g_val = 0;
+	int b_val = 0;
+	int a_val = 0;
+
+	float r_temp = 0;
+	float g_temp = 0;
+	float b_temp = 0;
+	float a_temp = 0;
+
+	std::vector<ImageMisc::Pixel> pixel_vector_main;
+	std::vector<ImageMisc::Pixel> pixel_vector_original;
+	std::vector<ImageMisc::Pixel> pixel_vector_mask;
+
+	for (auto i = 0; i < temp_image->get_width() * temp_image->get_height(); i++)
+	{
+		ImageMisc::GetPixel(temp_image->get_data(), my_image->get_width(), i % my_image->get_width(), i / my_image->get_width(), &r, &g, &b, &a);
+		pixel_vector_main.push_back(ImageMisc::Pixel(r, g, b, a));
+	}
+
+	for (auto i = 0; i < temp_image->get_width() * temp_image->get_height(); i++)
+	{
+		ImageMisc::GetPixel(my_image->get_original_data(), my_image->get_width(), i % my_image->get_width(), i / my_image->get_width(), &r, &g, &b, &a);
+		pixel_vector_original.push_back(ImageMisc::Pixel(r, g, b, a));
+	}
+
+	for (auto i = 0; i < temp_mask_image->get_width() * temp_mask_image->get_height(); i++)
+	{
+		ImageMisc::GetPixel(temp_mask_image->get_data(), my_image->get_width(), i % my_image->get_width(), i / my_image->get_width(), &r, &g, &b, &a);
+		pixel_vector_mask.push_back(ImageMisc::Pixel(r, g, b, a));
+	}
+
+	if (!was_masked)
+	{
+		for (int i = 0; i < temp_image->get_width() * temp_image->get_height(); i++)
+		{
+			pixel_vector_main[i].r = 0;
+			pixel_vector_main[i].g = 0;
+			pixel_vector_main[i].b = 0;
+		}
+
+		was_masked = true;
+	}
+
+	for (int i = 0; i < temp_image->get_width() * temp_image->get_height(); i++)
+	{
+		if (pixel_vector_mask[i].r == 255 && pixel_vector_mask[i].g == 255 & pixel_vector_mask[i].b == 255)
+		{
+			pixel_vector_main[i].r = pixel_vector_original[i].r;
+			pixel_vector_main[i].g = pixel_vector_original[i].g;
+			pixel_vector_main[i].b = pixel_vector_original[i].b;
+		}
+	}
+
+	for (auto k = 0; k < pixel_vector_main.size(); k++)
+	{
+		auto tempPixel = pixel_vector_main[k];
+
+		r_val = tempPixel.r;
+		g_val = tempPixel.g;
+		b_val = tempPixel.b;
+		a_val = tempPixel.a;;
+
+		output_image_data.push_back(r_val);
+		output_image_data.push_back(g_val);
+		output_image_data.push_back(b_val);
+		output_image_data.push_back(a_val);
+	}
+
+	ImageMisc::LoadTextureFromData(output_image_data.data(), &my_image->get_texture(), my_image->get_width(), my_image->get_height());
+	ImageMisc::WriteImage(my_image->get_save_path().c_str(), 512, 512, 4, output_image_data.data());
+	my_image->set_main_data(output_image_data);
 }
