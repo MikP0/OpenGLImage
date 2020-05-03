@@ -252,8 +252,8 @@ namespace my_gui
 						}
 						break;
 					case 4:
-						ImGui::SliderAngle("Angle", &angle);
-						ImGui::SliderAngle("Angle offset", &angleOffset);
+						ImGui::SliderAngle("Angle", &angle, 0, 90);
+						ImGui::SliderAngle("Angle offset", &angleOffset, 0, 180);
 						ImGui::SliderInt("Radius", &radius, 0, 250);
 						if (ImGui::Button("Proceed")) {
 							ImageEditor::fft_filter_edgedetect(my_image, angle, angleOffset, radius);
