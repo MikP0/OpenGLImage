@@ -1404,11 +1404,6 @@ void MergeM(std::vector<std::vector<std::vector<ImageMisc::Pixel>>>& groups_vect
 		{
 			for (int j = 0; j < groups_vector[i + 1].size(); j++)
 			{
-				/*for (int w = 0; w < groups_vector[i + 1][j].size(); w++)
-				{
-					groups_vector[i + 1][j][w].Group = i;
-				}*/
-
 				groups_vector[i].push_back(groups_vector[i + 1][j]);
 			}
 

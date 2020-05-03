@@ -276,7 +276,7 @@ namespace my_gui
 						ImGui::Text(pchar);
 
 						if (ImGui::Button("Proceed")) {
-							ImageEditor::region_split_merge(my_image, 500, 500, 16, number_of_groups_after_split_and_merge);
+							ImageEditor::region_split_merge(my_image, ssv, msv, mpg, number_of_groups_after_split_and_merge);
 						}
 						break;
 					}
